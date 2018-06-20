@@ -35,8 +35,6 @@ Charles Hunt – [Website](http://cornfluence.com) – charlesalberthunt@gmail.c
 
 Distributed under the MIT license. See ``LICENSE`` for more information.
 
-[https://github.com/charlesahunt/treerangemap](https://github.com/charlesahunt/)
-
 ## Contributing
 
 1. Fork it (<https://github.com/charlesahunt/treerangemap/fork>)
