@@ -19,7 +19,7 @@ sbt and mill
 ## Usage example
 
 
-_For more examples and usage, please refer to the [Wiki][wiki]._
+_For more examples and usage, please refer to the [Wiki](https://github.com/CharlesAHunt/TreeRangeMap/wiki)_
 
 ## Development setup
 
