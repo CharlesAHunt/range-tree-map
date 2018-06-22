@@ -1,7 +1,6 @@
 import com.charlesahunt.RangeTreeMap
 import org.scalatest.WordSpec
 
-import scala.collection.mutable
 import scala.math.Ordering._
 
 class RangeTreeMapTest extends WordSpec {
