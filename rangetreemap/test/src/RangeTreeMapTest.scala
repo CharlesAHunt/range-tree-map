@@ -1,17 +1,19 @@
+import com.charlesahunt.RangeTreeMap
 import org.scalatest.WordSpec
 
-class RangeTreeMapTestSpec extends WordSpec {
+import scala.collection.mutable
+import scala.math.Ordering._
+
+class RangeTreeMapTest extends WordSpec {
 
   "A RangeTreeMap" when {
     "empty" should {
-      "have size 0" in {
-        assert(RangeTreeMap.empty.size == 0)
+      "have span None" in {
+        assert(RangeTreeMap[Int, Int].span() == None)
       }
 
-      "produce NoSuchElementException when head is invoked" in {
-        assertThrows[NoSuchElementException] {
-          Set.empty.head
-        }
+      "put an element and retrieve it from the map" in {
+        //TODO
       }
     }
   }

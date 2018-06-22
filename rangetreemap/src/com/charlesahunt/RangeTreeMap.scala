@@ -8,9 +8,9 @@ import scala.collection.mutable
   * @tparam K some number type
   * @tparam V any value
   */
-class RangeTreeMap[K, V](implicit ord : scala.Ordering[K]) {
+class RangeTreeMap[K, V](implicit ordering : scala.Ordering[K]) {
 
-  val rangeMap = new mutable.TreeMap[K, RangeEntry[K, V]]
+  val rangeTreeMap = new mutable.TreeMap[K, RangeEntry[K, V]]
 
   /**
     * Returns a view of this range map as an unmodifiable Map[Range[K], V].
@@ -22,30 +22,31 @@ class RangeTreeMap[K, V](implicit ord : scala.Ordering[K]) {
     */
   def asMapOfRanges(): Map[Range[K], V] = {Map()} //TODO
 
-  def clear(): Unit = rangeMap.clear
+  def clear(): Unit = rangeTreeMap.clear
 
-  def get(key: K): Option[V] = rangeMap.get(key).map(_.value)
+  def get(key: K): Option[V] = rangeTreeMap.get(key).map(_.value)
 
-  def put(range: Range[K], value: V): Unit = rangeMap.put(range.lower, RangeEntry(range, value))
+  def put(range: Range[K], value: V): Unit =
+    rangeTreeMap.put(range.lower, RangeEntry(range, value))
 
   /**
     * Puts all the associations from rangeMap into this range map.
     */
-  def putAll(rangeMap: RangeTreeMap[K, V]): Unit = {()} //TODO
+  def putAll(rangeMap: RangeTreeMap[K, V]): Unit =
+    rangeTreeMap.++(rangeMap.rangeTreeMap)
 
   /**
     * Maps a range to a specified value, coalescing this range with any existing ranges with the same value that are connected to this range.
     */
   def putCoalescing(range: Range[K], value: V): Unit = {()} //TODO
 
-  def remove(rangeToRemove: Range[K]): Unit = rangeMap.remove(rangeToRemove.lower)
+  def remove(rangeToRemove: Range[K]): Unit = rangeTreeMap.remove(rangeToRemove.lower)
 
   /**
     * Returns the minimal range enclosing the ranges in this RangeMap.
     */
-  def span(): Range[K] = {
-    null
-  } //TODO
+  def span(): Option[Range[K]] =
+    rangeTreeMap.headOption.map(head => Range(head._1, rangeTreeMap.last._1))
 
   /**
     * Returns a view of the part of this range map that intersects with range.
@@ -55,7 +56,7 @@ class RangeTreeMap[K, V](implicit ord : scala.Ordering[K]) {
 }
 
 object RangeTreeMap {
-  def apply[K, V]() = new RangeTreeMap[K, V]
+  def apply[K, V](implicit ordering : scala.Ordering[K]): RangeTreeMap[K, V] = new RangeTreeMap[K, V]
 }
 
 case class Range[K](lower: K, upper: K)
