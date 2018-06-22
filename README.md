@@ -1,10 +1,10 @@
 # RangeTreeMap
 > A map from ranges to values based on a TreeMap.
 
-[![Build Status](https://api.travis-ci.org/charlesahunt/treerangemap.svg)](https://travis-ci.org/charlesahunt/treerangemap)
-[![Workflow](https://badge.waffle.io/typelevel/treerangemap.svg?label=ready&title=Ready)](https://waffle.io/charlesahunt/treerangemap)
-[![codecov.io](http://codecov.io/github/charlesahunt/treerangemap/coverage.svg?branch=master)](http://codecov.io/github/charlesahunt/treerangemap?branch=master)
+[![CircleCI](https://circleci.com/gh/CharlesAHunt/RangeTreeMap.svg?style=svg)](https://circleci.com/gh/CharlesAHunt/RangeTreeMap)
 [![Latest version](https://index.scala-lang.org/charlesahunt/treerangemap/latest.svg?color=orange&v=1)](https://index.scala-lang.org/charlesahunt/treerangemap)
+[![Waffle.io - Columns and their card count](https://badge.waffle.io/CharlesAHunt/RangeTreeMap.svg?columns=all)](https://waffle.io/CharlesAHunt/RangeTreeMap)
+[![codecov.io](http://codecov.io/github/charlesahunt/treerangemap/coverage.svg?branch=master)](http://codecov.io/github/charlesahunt/treerangemap?branch=master)
 
 A map from ranges to values based on a TreeMap.
 
