@@ -35,6 +35,14 @@ _For more examples and usage, please refer to the [Wiki](https://github.com/Char
 
 ## Development setup
 
+```scala
+
+    implicit val ordering: Ordering[Long] = ...
+
+    RangeTreeMap.apply[Long, Int]()
+
+```
+
 
 ## Release History
 
