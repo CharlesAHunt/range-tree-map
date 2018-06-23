@@ -54,7 +54,8 @@ class RangeTreeMap[K, V](implicit ordering : scala.Ordering[K]) {
     */
   def subRangeMap(subRange: Range[K]): RangeTreeMap[K, V] = {
     rangeTreeMap.keysIteratorFrom(subRange.lower)
-  } //TODO
+    null  //TODO
+  }
 
 }
 
