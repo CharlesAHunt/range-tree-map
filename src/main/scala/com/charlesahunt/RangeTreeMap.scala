@@ -10,7 +10,7 @@ import scala.collection.mutable
   */
 class RangeTreeMap[K, V](implicit ordering : scala.Ordering[K]) {
 
-  val rangeTreeMap = new mutable.TreeMap[K, RangeEntry[K, V]]
+  val rangeTreeMap: mutable.TreeMap[K, RangeEntry[K, V]] = new mutable.TreeMap[K, RangeEntry[K, V]]
 
   /**
     * Returns a view of this range map as an unmodifiable Map[Range[K], V].
@@ -63,9 +63,9 @@ object RangeTreeMap {
   def apply[K, V](implicit ordering : scala.Ordering[K]): RangeTreeMap[K, V] = new RangeTreeMap[K, V]
 }
 
-case class Range[K](lower: K, upper: K)
+final case class Range[K](lower: K, upper: K)
 
-case class RangeEntry[K, V](
+final case class RangeEntry[K, V](
   range: Range[K],
   value: V
 )

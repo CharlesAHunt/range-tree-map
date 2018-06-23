@@ -55,3 +55,9 @@ scalacOptions ++= Seq(
 //  "-Ywarn-unused:privates",            // Warn if a private member is unused.
 //  "-Ywarn-value-discard"               // Warn when non-Unit expression results are unused.
 )
+
+import com.scalapenos.sbt.prompt.SbtPrompt.autoImport._
+
+promptTheme := com.scalapenos.sbt.prompt.PromptThemes.ScalapenosTheme
+
+//wartremoverErrors ++= Warts.all  //TODO enable after coalescing and subrange map are cleaned up
