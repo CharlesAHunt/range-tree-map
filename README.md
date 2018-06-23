@@ -1,19 +1,29 @@
 # RangeTreeMap
-> A map from ranges to values based on a TreeMap.
+> A generic map from ranges to values based on a TreeMap.
 
 [![CircleCI](https://circleci.com/gh/CharlesAHunt/RangeTreeMap.svg?style=svg)](https://circleci.com/gh/CharlesAHunt/RangeTreeMap)
 [![Latest version](https://index.scala-lang.org/charlesahunt/treerangemap/latest.svg?color=orange&v=1)](https://index.scala-lang.org/charlesahunt/treerangemap)
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/CharlesAHunt/RangeTreeMap.svg?columns=all)](https://waffle.io/CharlesAHunt/RangeTreeMap)
-[![codecov.io](http://codecov.io/github/charlesahunt/treerangemap/coverage.svg?branch=master)](http://codecov.io/github/charlesahunt/treerangemap?branch=master)
+[![codecov.io](http://codecov.io/github/charlesahunt/rangetreemap/coverage.svg?branch=master)](http://codecov.io/github/charlesahunt/rangetreemap?branch=master)
 
-A map from ranges to values based on a TreeMap.
+A supplemental Scala collection for mapping from ranges to values based on a TreeMap.
+
+The underlying structure is a map from a lower bound to a RangeEntry.  If you have two ranges with the same lower bound,
+the second range needs have a higher lower bound, ideally greater than or equal to the upper bound of the other range so
+ranges don't overlap.
 
 ## Installation
 
-sbt and mill
+sbt
 
 ```sh
+"com.charlesahunt" %% "range-tree-map" % "0.1.0"
+```
 
+mill
+
+```sh
+ivy"com.charlesahunt::range-tree-map:0.1.0"
 ```
 
 ## Usage example
@@ -21,12 +31,13 @@ sbt and mill
 
 _For more examples and usage, please refer to the [Wiki](https://github.com/CharlesAHunt/RangeTreeMap/wiki)_
 
+
 ## Development setup
 
 
 ## Release History
 
-* 0.0.1
+* 0.1.0
     * Work in progress
 
 ## Meta

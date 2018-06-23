@@ -15,32 +15,33 @@ class RangeTreeMap[K, V](implicit ordering : scala.Ordering[K]) {
   /**
     * Returns a view of this range map as an unmodifiable Map[Range[K], V].
     */
-  def asDescendingMapOfRanges(): Map[Range[K], V] = {Map()} //TODO
-
-  /**
-    * Returns a view of this range map as an unmodifiable Map[Range[K], V].
-    */
-  def asMapOfRanges(): Map[Range[K], V] = {Map()} //TODO
+  def asMapOfRanges(): Map[Range[K], V] =
+    rangeTreeMap.values.map(entry => entry.range -> entry.value).toMap
 
   def clear(): Unit = rangeTreeMap.clear
 
   def get(key: K): Option[V] = rangeTreeMap.get(key).map(_.value)
 
-  def put(range: Range[K], value: V): Unit =
+  def put(range: Range[K], value: V): Option[RangeEntry[K, V]] =
     rangeTreeMap.put(range.lower, RangeEntry(range, value))
 
   /**
     * Puts all the associations from rangeMap into this range map.
     */
-  def putAll(rangeMap: RangeTreeMap[K, V]): Unit =
+  def putAll(rangeMap: RangeTreeMap[K, V]):  RangeTreeMap[K, V] = {
     rangeTreeMap.++(rangeMap.rangeTreeMap)
+    this
+  }
 
   /**
     * Maps a range to a specified value, coalescing this range with any existing ranges with the same value that are connected to this range.
     */
-  def putCoalescing(range: Range[K], value: V): Unit = {()} //TODO
+  def putCoalescing(range: Range[K], value: V): Unit = {
+    () //TODO
+  }
 
-  def remove(rangeToRemove: Range[K]): Unit = rangeTreeMap.remove(rangeToRemove.lower)
+  def remove(rangeToRemove: Range[K]): Option[RangeEntry[K, V]] =
+    rangeTreeMap.remove(rangeToRemove.lower)
 
   /**
     * Returns the minimal range enclosing the ranges in this RangeMap.
@@ -51,7 +52,9 @@ class RangeTreeMap[K, V](implicit ordering : scala.Ordering[K]) {
   /**
     * Returns a view of the part of this range map that intersects with range.
     */
-  def subRangeMap(subRange: Range[K]): RangeTreeMap[K,V] = {null} //TODO
+  def subRangeMap(subRange: Range[K]): RangeTreeMap[K, V] = {
+    rangeTreeMap.keysIteratorFrom(subRange.lower)
+  } //TODO
 
 }
 

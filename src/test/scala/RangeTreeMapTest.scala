@@ -7,8 +7,8 @@ class RangeTreeMapTest extends WordSpec {
 
   "A RangeTreeMap" when {
     "empty" should {
-      "have span None" in {
-        assert(RangeTreeMap[Int, Int].span() == None)
+      "have an empty span" in {
+        assert(RangeTreeMap[Int, Int].span().isEmpty)
       }
 
       "put an element and retrieve it from the map" in {
