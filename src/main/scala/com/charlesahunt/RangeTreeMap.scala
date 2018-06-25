@@ -15,14 +15,16 @@ class RangeTreeMap[K, V](implicit ordering : scala.Ordering[K]) {
   /**
     * Returns a view of this range map as an unmodifiable Map[Range[K], V].
     */
-  def asMapOfRanges(): Map[Range[K], V] =
+  def asMapOfRanges(): Map[RangeKey[K], V] =
     rangeTreeMap.values.map(entry => entry.range -> entry.value).toMap
 
   def clear(): Unit = rangeTreeMap.clear
 
   def get(key: K): Option[V] = rangeTreeMap.get(key).map(_.value)
 
-  def put(range: Range[K], value: V): Option[RangeEntry[K, V]] =
+  def get(range: RangeKey[K]): Option[V] = get(range.lower)
+
+  def put(range: RangeKey[K], value: V): Option[RangeEntry[K, V]] =
     rangeTreeMap.put(range.lower, RangeEntry(range, value))
 
   /**
@@ -36,23 +38,23 @@ class RangeTreeMap[K, V](implicit ordering : scala.Ordering[K]) {
   /**
     * Maps a range to a specified value, coalescing this range with any existing ranges with the same value that are connected to this range.
     */
-  def putCoalescing(range: Range[K], value: V): Unit = {
+  def putCoalescing(range: RangeKey[K], value: V): Unit = {
     () //TODO
   }
 
-  def remove(rangeToRemove: Range[K]): Option[RangeEntry[K, V]] =
+  def remove(rangeToRemove: RangeKey[K]): Option[RangeEntry[K, V]] =
     rangeTreeMap.remove(rangeToRemove.lower)
 
   /**
     * Returns the minimal range enclosing the ranges in this RangeMap.
     */
-  def span(): Option[Range[K]] =
-    rangeTreeMap.headOption.map(head => Range(head._1, rangeTreeMap.last._1))
+  def span(): Option[RangeKey[K]] =
+    rangeTreeMap.headOption.map(head => RangeKey(head._1, rangeTreeMap.last._1))
 
   /**
     * Returns a view of the part of this range map that intersects with range.
     */
-  def subRangeMap(subRange: Range[K]): RangeTreeMap[K, V] = {
+  def subRangeMap(subRange: RangeKey[K]): RangeTreeMap[K, V] = {
     rangeTreeMap.keysIteratorFrom(subRange.lower)
     null  //TODO
   }
@@ -63,9 +65,9 @@ object RangeTreeMap {
   def apply[K, V](implicit ordering : scala.Ordering[K]): RangeTreeMap[K, V] = new RangeTreeMap[K, V]
 }
 
-final case class Range[K](lower: K, upper: K)
+final case class RangeKey[K](lower: K, upper: K)
 
 final case class RangeEntry[K, V](
-  range: Range[K],
+  range: RangeKey[K],
   value: V
 )
