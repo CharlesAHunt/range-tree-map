@@ -1,5 +1,7 @@
 name := "range-tree-map"
 
+description := "A datastructure mapping ranges to values based on a TreeMap"
+
 version := "0.1.0"
 
 organization := "com.charlesahunt"
@@ -7,6 +9,49 @@ organization := "com.charlesahunt"
 scalaVersion := "2.12.6"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+
+publishMavenStyle := true
+
+publishArtifact in Test := false
+
+pomIncludeRepository := { _ => false }
+
+credentials += Credentials(Path.userHome / ".sbt" / ".credentials")
+
+sonatypeProfileName := "com.charlesahunt"
+
+useGpg := true
+
+publishTo := {
+  val nexus = "https://oss.sonatype.org/"
+  if (isSnapshot.value)
+    Some("snapshots" at nexus + "content/repositories/snapshots")
+  else
+    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+}
+
+pomExtra in Global := {
+  <url>http://www.cornfluence.com</url>
+    <scm>
+      <url>https://github.com/CharlesAHunt/RangeTreeMap</url>
+      <connection>scm:git@github.com:CharlesAHunt/RangeTreeMap.git</connection>
+    </scm>
+    <developers>
+      <developer>
+        <id>CharlesAHunt</id>
+        <name>Charles A Hunt</name>
+        <url>http://www.cornfluence.com</url>
+      </developer>
+    </developers>
+}
+
+licenses := Seq("Apache 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0"))
+
+parallelExecution in Test := false
+
+resolvers ++= Seq(
+  "OSS"  at "http://oss.sonatype.org/content/repositories/releases"
+)
 
 scalacOptions ++= Seq(
   "-deprecation",                      // Emit warning and location for usages of deprecated APIs.

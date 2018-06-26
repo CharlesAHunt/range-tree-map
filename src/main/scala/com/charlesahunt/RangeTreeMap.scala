@@ -39,7 +39,7 @@ class RangeTreeMap[K, V](implicit ordering : scala.Ordering[K]) {
     * Maps a range to a specified value, coalescing this range with any existing ranges with the same value that are connected to this range.
     */
   def putCoalescing(range: RangeKey[K], value: V): Unit = {
-    () //TODO
+    throw new Exception("Not yet implemented.") //TODO
   }
 
   def remove(rangeToRemove: RangeKey[K]): Option[RangeEntry[K, V]] =
@@ -55,8 +55,11 @@ class RangeTreeMap[K, V](implicit ordering : scala.Ordering[K]) {
     * Returns a view of the part of this range map that intersects with range.
     */
   def subRangeMap(subRange: RangeKey[K]): RangeTreeMap[K, V] = {
-    rangeTreeMap.keysIteratorFrom(subRange.lower)
-    null  //TODO
+    val rtm = new RangeTreeMap[K, V]()
+    rangeTreeMap.keysIteratorFrom(subRange.lower).dropWhile(i => ordering.gt(i, subRange.upper)).map { i =>
+      rangeTreeMap.get(i).map(v => rtm.put(v.range, v.value))
+    }
+    rtm
   }
 
 }

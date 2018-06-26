@@ -1,4 +1,4 @@
-import com.charlesahunt.{RangeEntry, RangeKey, RangeTreeMap}
+import com.charlesahunt.{RangeKey, RangeTreeMap}
 import org.scalatest.{Matchers, WordSpec}
 
 import scala.math.Ordering._
