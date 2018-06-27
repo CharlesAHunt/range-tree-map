@@ -38,9 +38,18 @@ class RangeTreeMap[K, V](implicit ordering : scala.Ordering[K]) {
   /**
     * Maps a range to a specified value, coalescing this range with any existing ranges with the same value that are connected to this range.
     */
-  def putCoalescing(range: RangeKey[K], value: V): Unit = {
-    throw new Exception("Not yet implemented.") //TODO
-  }
+  def putCoalescing(range: RangeKey[K], value: V): Unit =
+    if(rangeTreeMap.isEmpty || !encloses(range))
+      put(range, value)
+    else {
+      throw new Exception("Not yet implemented.") //TODO
+    }
+
+  private def encloses(range: RangeKey[K]): Boolean =
+    if(ordering.gt(range.lower, rangeTreeMap.head._2.range.lower) ||
+      ordering.lt(range.upper, rangeTreeMap.last._2.range.upper)) true
+    else false
+
 
   def remove(rangeToRemove: RangeKey[K]): Option[RangeEntry[K, V]] =
     rangeTreeMap.remove(rangeToRemove.lower)

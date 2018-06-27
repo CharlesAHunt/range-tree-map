@@ -45,7 +45,7 @@ pomExtra in Global := {
     </developers>
 }
 
-licenses := Seq("Apache 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0"))
+licenses := Seq("MIT License" -> url("http://opensource.org/licenses/MIT"))
 
 parallelExecution in Test := false
 
