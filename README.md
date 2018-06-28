@@ -37,9 +37,9 @@ _For more examples and usage, please refer to the [Wiki](https://github.com/Char
 
 ```scala
 
-    implicit val ordering: Ordering[Long] = ...
+    import scala.math.Ordering._
 
-    RangeTreeMap.apply[Long, Int]()
+    RangeTreeMap.apply[Long, Int]
 
 ```
 

@@ -20,7 +20,7 @@ credentials += Credentials(Path.userHome / ".sbt" / ".credentials")
 
 sonatypeProfileName := "com.charlesahunt"
 
-useGpg := true
+useGpg := false
 
 publishTo := {
   val nexus = "https://oss.sonatype.org/"
@@ -30,20 +30,10 @@ publishTo := {
     Some("releases"  at nexus + "service/local/staging/deploy/maven2")
 }
 
-pomExtra in Global := {
-  <url>http://www.cornfluence.com</url>
-    <scm>
-      <url>https://github.com/CharlesAHunt/RangeTreeMap</url>
-      <connection>scm:git@github.com:CharlesAHunt/RangeTreeMap.git</connection>
-    </scm>
-    <developers>
-      <developer>
-        <id>CharlesAHunt</id>
-        <name>Charles A Hunt</name>
-        <url>http://www.cornfluence.com</url>
-      </developer>
-    </developers>
-}
+developers := List(Developer("charlesahunt",
+  "Charles Hunt",
+  "charlesalberthunt@gmail.com",
+  url("http://cornfluence.com")))
 
 licenses := Seq("MIT License" -> url("http://opensource.org/licenses/MIT"))
 
@@ -91,7 +81,7 @@ scalacOptions ++= Seq(
   "-Ywarn-infer-any",                  // Warn when a type argument is inferred to be `Any`.
   "-Ywarn-nullary-override",           // Warn when non-nullary `def f()' overrides nullary `def f'.
   "-Ywarn-nullary-unit",               // Warn when nullary methods return Unit.
-  "-Ywarn-numeric-widen",              // Warn when numerics are widened.
+  "-Ywarn-numeric-widen"              // Warn when numerics are widened.
 //  "-Ywarn-unused:implicits",           // Warn if an implicit parameter is unused.
 //  "-Ywarn-unused:imports",             // Warn if an import selector is not referenced.
 //  "-Ywarn-unused:locals",              // Warn if a local definition is unused.

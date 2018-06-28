@@ -5,10 +5,12 @@ import scala.collection.mutable
 /**
   * A data structure backed by a TreeMap where numeric ranges map to values and where the key, K, is the lower bound.
   *
+  * @param initialMap Optional TreeMap structure to initialize RangeTreeMap
+  * @param ordering
   * @tparam K some number type
   * @tparam V any value
   */
-class RangeTreeMap[K, V](implicit ordering : scala.Ordering[K]) {
+class RangeTreeMap[K, V](initialMap: Option[mutable.TreeMap[K, RangeEntry[K, V]]] = None)(implicit ordering : scala.Ordering[K]) {
 
   val rangeTreeMap: mutable.TreeMap[K, RangeEntry[K, V]] = new mutable.TreeMap[K, RangeEntry[K, V]]
 
@@ -35,22 +37,6 @@ class RangeTreeMap[K, V](implicit ordering : scala.Ordering[K]) {
     this
   }
 
-  /**
-    * Maps a range to a specified value, coalescing this range with any existing ranges with the same value that are connected to this range.
-    */
-  def putCoalescing(range: RangeKey[K], value: V): Unit =
-    if(rangeTreeMap.isEmpty || !encloses(range))
-      put(range, value)
-    else {
-      throw new Exception("Not yet implemented.") //TODO
-    }
-
-  private def encloses(range: RangeKey[K]): Boolean =
-    if(ordering.gt(range.lower, rangeTreeMap.head._2.range.lower) ||
-      ordering.lt(range.upper, rangeTreeMap.last._2.range.upper)) true
-    else false
-
-
   def remove(rangeToRemove: RangeKey[K]): Option[RangeEntry[K, V]] =
     rangeTreeMap.remove(rangeToRemove.lower)
 
@@ -63,18 +49,39 @@ class RangeTreeMap[K, V](implicit ordering : scala.Ordering[K]) {
   /**
     * Returns a view of the part of this range map that intersects with range.
     */
-  def subRangeMap(subRange: RangeKey[K]): RangeTreeMap[K, V] = {
-    val rtm = new RangeTreeMap[K, V]()
-    rangeTreeMap.keysIteratorFrom(subRange.lower).dropWhile(i => ordering.gt(i, subRange.upper)).map { i =>
-      rangeTreeMap.get(i).map(v => rtm.put(v.range, v.value))
+  def subRangeMap(subRange: RangeKey[K]): RangeTreeMap[K, V] =
+    RangeTreeMap.apply[K, V](Some(intersection(subRange)))
+
+  /**
+    * Maps a range to a specified value, coalescing this range with any existing ranges with the same value that are connected to this range.
+    */
+  def putCoalescing(range: RangeKey[K], value: V): Unit =
+    if(rangeTreeMap.isEmpty || !encloses(range))
+      put(range, value)
+    else {
+      val intersections = intersection(range)
+      val lowerMatch = intersections.get(range.lower)
+      if(intersections.isEmpty && lowerMatch.isEmpty) put(range, value)
+      else {
+        throw new Exception("Not yet implemented.") //TODO merge
+      }
     }
-    rtm
-  }
+
+  private def encloses(range: RangeKey[K]): Boolean =
+    if(ordering.gt(range.lower, rangeTreeMap.head._2.range.lower) ||
+      ordering.lt(range.upper, rangeTreeMap.last._2.range.upper)) true
+    else false
+
+
+  def intersection(subRange: RangeKey[K]) =
+    rangeTreeMap.filter(entry =>ordering.lt(entry._2.range.lower, subRange.upper) && ordering.gt(entry._2.range.upper, subRange.lower))
 
 }
 
 object RangeTreeMap {
   def apply[K, V](implicit ordering : scala.Ordering[K]): RangeTreeMap[K, V] = new RangeTreeMap[K, V]
+  def apply[K, V](initialMap: Option[mutable.TreeMap[K, RangeEntry[K, V]]])(implicit ordering : scala.Ordering[K]): RangeTreeMap[K, V] =
+    new RangeTreeMap[K, V](initialMap)
 }
 
 final case class RangeKey[K](lower: K, upper: K)

@@ -17,6 +17,15 @@ class RangeTreeMapTest extends WordSpec with Matchers  {
         testMap.put(testRange, "test")
         testMap.get(testRange) should contain ("test")
       }
+
+      "put and element in the map, retrieve it, then clear the map" in {
+        val testRange = RangeKey[Int](0, 5)
+        val testMap = RangeTreeMap.apply[Int, String]
+        testMap.put(testRange, "test")
+        testMap.get(testRange) should contain ("test")
+        testMap.clear
+        testMap.get(testRange) shouldBe empty
+      }
     }
   }
 }
