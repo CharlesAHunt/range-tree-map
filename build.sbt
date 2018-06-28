@@ -35,6 +35,8 @@ developers := List(Developer("charlesahunt",
   "charlesalberthunt@gmail.com",
   url("http://cornfluence.com")))
 
+homepage := Some(url("https://github.com/CharlesAHunt/RangeTreeMap/wiki/Basics"))
+
 licenses := Seq("MIT License" -> url("http://opensource.org/licenses/MIT"))
 
 parallelExecution in Test := false
