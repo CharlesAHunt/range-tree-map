@@ -2,7 +2,7 @@ name := "range-tree-map"
 
 description := "A datastructure mapping ranges to values based on a TreeMap"
 
-version := "0.1.0"
+version := "0.1.2"
 
 organization := "com.charlesahunt"
 
@@ -30,12 +30,14 @@ publishTo := {
     Some("releases"  at nexus + "service/local/staging/deploy/maven2")
 }
 
+pomExtra in Global := {
+  <url>https://github.com/CharlesAHunt/RangeTreeMap</url>
+}
+
 developers := List(Developer("charlesahunt",
   "Charles Hunt",
   "charlesalberthunt@gmail.com",
   url("http://cornfluence.com")))
-
-homepage := Some(url("https://github.com/CharlesAHunt/RangeTreeMap/wiki/Basics"))
 
 licenses := Seq("MIT License" -> url("http://opensource.org/licenses/MIT"))
 
