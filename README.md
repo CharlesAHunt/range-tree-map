@@ -2,7 +2,7 @@
 > A generic map from ranges to values based on a TreeMap.
 
 [![CircleCI](https://circleci.com/gh/CharlesAHunt/RangeTreeMap.svg?style=shield)](https://circleci.com/gh/CharlesAHunt/RangeTreeMap)
-[![Latest version](https://index.scala-lang.org/charlesahunt/rangetreemap/range-tree-map/latest.svg?color=orange&v=1)](https://index.scala-lang.org/charlesahunt/rangetreemap/0.1.3?target=_2.12)
+[![Latest version](https://index.scala-lang.org/charlesahunt/rangetreemap/range-tree-map/latest.svg?color=orange&v=1)](https://index.scala-lang.org/charlesahunt/rangetreemap)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.charlesahunt/range-tree-map_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.charlesahunt/range-tree-map_2.12)
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/CharlesAHunt/RangeTreeMap.svg?columns=all)](https://waffle.io/CharlesAHunt/RangeTreeMap)
 [![codecov.io](http://codecov.io/github/charlesahunt/rangetreemap/coverage.svg?branch=master)](http://codecov.io/github/charlesahunt/rangetreemap?branch=master)
