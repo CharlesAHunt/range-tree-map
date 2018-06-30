@@ -7,11 +7,19 @@ class RangeTreeMapTest extends WordSpec with Matchers  {
 
   "A RangeTreeMap" when {
     "empty" should {
+
       "have an empty span" in {
         RangeTreeMap.apply[Int, String].span() shouldBe empty
       }
 
-      "put an element and retrieve it from the map" in {
+      "put an element and retrieve it from the map by lower bound" in {
+        val testRange = RangeKey[Int](0, 5)
+        val testMap = RangeTreeMap.apply[Int, String]
+        testMap.put(testRange, "test")
+        testMap.get(testRange.lower) should contain ("test")
+      }
+
+      "put an element and retrieve it from the map by RangeKey" in {
         val testRange = RangeKey[Int](0, 5)
         val testMap = RangeTreeMap.apply[Int, String]
         testMap.put(testRange, "test")
@@ -23,7 +31,7 @@ class RangeTreeMapTest extends WordSpec with Matchers  {
         val testMap = RangeTreeMap.apply[Int, String]
         testMap.put(testRange, "test")
         testMap.get(testRange) should contain ("test")
-        testMap.clear
+        testMap.clear()
         testMap.get(testRange) shouldBe empty
       }
 
@@ -35,6 +43,12 @@ class RangeTreeMapTest extends WordSpec with Matchers  {
         testMap.remove(testRange)
         testMap.get(testRange) shouldBe empty
       }
+    }
+
+    "nonempty" should {
+
+      //TODO: Nonempty test cases
+
     }
   }
 }

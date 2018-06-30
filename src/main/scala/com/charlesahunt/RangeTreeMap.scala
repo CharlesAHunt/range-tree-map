@@ -3,7 +3,7 @@ package com.charlesahunt
 import scala.collection.mutable
 
 /**
-  * A data structure backed by a TreeMap where numeric ranges map to values and where the key, K, is the lower bound.
+  * A data structure backed by a mutable TreeMap where numeric ranges map to values and where the key, K, is the lower bound.
   *
   * @param initialMap Optional TreeMap structure to initialize RangeTreeMap
   * @param ordering
@@ -12,7 +12,7 @@ import scala.collection.mutable
   */
 class RangeTreeMap[K, V](initialMap: Option[mutable.TreeMap[K, RangeEntry[K, V]]] = None)(implicit ordering : scala.Ordering[K]) {
 
-  val rangeTreeMap: mutable.TreeMap[K, RangeEntry[K, V]] = new mutable.TreeMap[K, RangeEntry[K, V]]
+  val rangeTreeMap: mutable.TreeMap[K, RangeEntry[K, V]] = initialMap.getOrElse(new mutable.TreeMap[K, RangeEntry[K, V]])
 
   /**
     * Returns a view of this range map as an unmodifiable Map[Range[K], V].
@@ -22,10 +22,16 @@ class RangeTreeMap[K, V](initialMap: Option[mutable.TreeMap[K, RangeEntry[K, V]]
 
   def clear(): Unit = rangeTreeMap.clear
 
+  /**
+    * @param key - The lower bound of the range to retrieve
+    */
   def get(key: K): Option[V] = rangeTreeMap.get(key).map(_.value)
 
   def get(range: RangeKey[K]): Option[V] = get(range.lower)
 
+  /**
+    * Puts given value in map. Does not coalesce ranges.
+    */
   def put(range: RangeKey[K], value: V): Option[RangeEntry[K, V]] =
     rangeTreeMap.put(range.lower, RangeEntry(range, value))
 
@@ -55,7 +61,7 @@ class RangeTreeMap[K, V](initialMap: Option[mutable.TreeMap[K, RangeEntry[K, V]]
   /**
     * Maps a range to a specified value, coalescing this range with any existing ranges with the same value that are connected to this range.
     */
-  def putCoalescing(range: RangeKey[K], value: V): Unit =
+  def putCoalescing(range: RangeKey[K], value: V): Option[RangeEntry[K, V]] =
     if(rangeTreeMap.isEmpty || !encloses(range))
       put(range, value)
     else {
@@ -63,13 +69,20 @@ class RangeTreeMap[K, V](initialMap: Option[mutable.TreeMap[K, RangeEntry[K, V]]
       val lowerMatch = intersections.get(range.lower)
       if(intersections.isEmpty && lowerMatch.isEmpty) put(range, value)
       else {
-        throw new Exception("Not yet implemented.") //TODO merge
+        //TODO: https://github.com/CharlesAHunt/RangeTreeMap/issues/1
+        throw new Exception("Coalescing of intersecting ranges not yet implemented.")
       }
     }
 
-  private def encloses(range: RangeKey[K]): Boolean =
-    if(ordering.gt(range.lower, rangeTreeMap.head._2.range.lower) ||
-      ordering.lt(range.upper, rangeTreeMap.last._2.range.upper)) true
+  /**
+    * Checks if the given range is within the lowest lower bound and the greatest upper bound of the entire RangeTreeMap
+    *
+    * @param range the range to check for enclosure
+    * @return
+    */
+  def encloses(range: RangeKey[K]): Boolean =
+    if( (ordering.gt(range.lower, rangeTreeMap.head._2.range.lower) && ordering.lt(range.lower, rangeTreeMap.last._2.range.upper)) ||
+      (ordering.lt(range.upper, rangeTreeMap.last._2.range.upper) && ordering.gt(range.upper, rangeTreeMap.head._2.range.lower))) true
     else false
 
 
