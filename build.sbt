@@ -99,4 +99,4 @@ import com.scalapenos.sbt.prompt.SbtPrompt.autoImport._
 
 promptTheme := com.scalapenos.sbt.prompt.PromptThemes.ScalapenosTheme
 
-//wartremoverErrors ++= Warts.all  //TODO enable after coalescing and subrange map are cleaned up
+//wartremoverErrors ++= Warts.all  //TODO enable after cleanup

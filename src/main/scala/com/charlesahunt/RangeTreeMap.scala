@@ -81,12 +81,11 @@ class RangeTreeMap[K, V](initialMap: Option[mutable.TreeMap[K, RangeEntry[K, V]]
     * @return
     */
   def encloses(range: RangeKey[K]): Boolean =
-    if( (ordering.gt(range.lower, rangeTreeMap.head._2.range.lower) && ordering.lt(range.lower, rangeTreeMap.last._2.range.upper)) ||
-      (ordering.lt(range.upper, rangeTreeMap.last._2.range.upper) && ordering.gt(range.upper, rangeTreeMap.head._2.range.lower))) true
-    else false
+    (ordering.gt(range.lower, rangeTreeMap.head._2.range.lower) && ordering.lt(range.lower, rangeTreeMap.last._2.range.upper)) ||
+      (ordering.lt(range.upper, rangeTreeMap.last._2.range.upper) && ordering.gt(range.upper, rangeTreeMap.head._2.range.lower))
 
 
-  def intersection(subRange: RangeKey[K]) =
+  def intersection(subRange: RangeKey[K]): mutable.TreeMap[K, RangeEntry[K, V]] =
     rangeTreeMap.filter(entry =>ordering.lt(entry._2.range.lower, subRange.upper) && ordering.gt(entry._2.range.upper, subRange.lower))
 
 }

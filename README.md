@@ -39,7 +39,11 @@ _For more examples and usage, please refer to the [Wiki](https://github.com/Char
 
     import scala.math.Ordering._
 
-    RangeTreeMap.apply[Long, Int]
+    val rangeMap = RangeTreeMap.apply[Int, String]
+
+    val rangeKey = RangeKey[Int](lower = 5, upper = 10)
+    
+    rangeMap.put(rangeKey, "exampleValue")
 
 ```
 
