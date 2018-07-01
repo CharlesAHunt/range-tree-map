@@ -29,12 +29,6 @@ ivy"com.charlesahunt::range-tree-map:0.1.4"
 
 ## Usage example
 
-
-_For more examples and usage, please refer to the [Wiki](https://github.com/CharlesAHunt/RangeTreeMap/wiki)_
-
-
-## Development setup
-
 ```scala
 
     import scala.math.Ordering._
@@ -46,12 +40,13 @@ _For more examples and usage, please refer to the [Wiki](https://github.com/Char
     rangeMap.put(rangeKey, "exampleValue")
 
 ```
+_For more examples and usage, please refer to the [Wiki](https://github.com/CharlesAHunt/RangeTreeMap/wiki)_
 
 
 ## Release History
 
-* 0.1.0
-    * Work in progress
+* 0.1.4
+    * Mostly functionally complete, `putCoalescing` still needs to be finished
 
 ## Meta
 
