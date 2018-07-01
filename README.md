@@ -18,13 +18,13 @@ ranges don't overlap.
 sbt
 
 ```sh
-"com.charlesahunt" %% "range-tree-map" % "0.1.3"
+"com.charlesahunt" %% "range-tree-map" % "0.1.4"
 ```
 
 mill
 
 ```sh
-ivy"com.charlesahunt::range-tree-map:0.1.3"
+ivy"com.charlesahunt::range-tree-map:0.1.4"
 ```
 
 ## Usage example
