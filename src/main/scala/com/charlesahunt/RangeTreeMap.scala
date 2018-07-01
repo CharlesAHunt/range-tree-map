@@ -33,7 +33,7 @@ class RangeTreeMap[K, V](initialMap: Option[mutable.TreeMap[K, RangeEntry[K, V]]
   /**
     * Puts all the associations from rangeMap into this range map.
     */
-  def putAll(rangeMap: RangeTreeMap[K, V]):  RangeTreeMap[K, V] = {
+  def putAll(rangeMap: RangeTreeMap[K, V]): RangeTreeMap[K, V] = {
     rangeTreeMap.++=(rangeMap.rangeTreeMap)
     this
   }
@@ -56,17 +56,16 @@ class RangeTreeMap[K, V](initialMap: Option[mutable.TreeMap[K, RangeEntry[K, V]]
   /**
     * Maps a range to a specified value, coalescing this range with any existing ranges with the same value that are connected to this range.
     */
-  def putCoalescing(range: RangeKey[K], value: V): Option[RangeEntry[K, V]] =
-    if(rangeTreeMap.isEmpty || !encloses(range))
-      put(range, value)
-    else {
-      val intersections = intersection(range)
-      val lowerMatch = intersections.get(range.lower)
-      if(intersections.isEmpty && lowerMatch.isEmpty) put(range, value)
-      else {
+  def putCoalescing(range: RangeKey[K], value: V): Option[RangeEntry[K, V]] = {
+    if (rangeTreeMap.nonEmpty && encloses(range)) {
+      intersection(range).foreach { intersection =>
+        //TODO: https://github.com/CharlesAHunt/RangeTreeMap/issues/1
+        //TODO Create new subranges from the existing ranges that do not overlap with the new range
         throw new Exception("Coalescing of intersecting ranges not yet implemented.")
       }
     }
+    put(range, value)
+  }
 
   /**
     * Checks if the given range is inclusively within the lowest lower bound and the greatest upper bound of the entire RangeTreeMap
