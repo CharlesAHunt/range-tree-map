@@ -39,7 +39,7 @@ class RangeTreeMap[K, V](initialMap: Option[mutable.TreeMap[K, RangeEntry[K, V]]
     * Puts all the associations from rangeMap into this range map.
     */
   def putAll(rangeMap: RangeTreeMap[K, V]):  RangeTreeMap[K, V] = {
-    rangeTreeMap.++(rangeMap.rangeTreeMap)
+    rangeTreeMap.++=(rangeMap.rangeTreeMap)
     this
   }
 

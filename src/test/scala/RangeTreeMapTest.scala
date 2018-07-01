@@ -1,7 +1,5 @@
-import com.charlesahunt.{RangeKey, RangeTreeMap}
 import org.scalatest.{Matchers, WordSpec}
-
-import scala.math.Ordering._
+import RangeTreeMapFixture._
 
 class RangeTreeMapTest extends WordSpec with Matchers  {
 
@@ -9,39 +7,47 @@ class RangeTreeMapTest extends WordSpec with Matchers  {
     "empty" should {
 
       "have an empty span" in {
-        RangeTreeMap.apply[Int, String].span() shouldBe empty
+        emptyRangeTreeMap.span() shouldBe empty
       }
 
       "put an element and retrieve it from the map by lower bound" in {
-        val testRange = RangeKey[Int](0, 5)
-        val testMap = RangeTreeMap.apply[Int, String]
-        testMap.put(testRange, "test")
-        testMap.get(testRange.lower) should contain ("test")
+        val testMap = emptyRangeTreeMap
+        testMap.put(testRange0_5, "test")
+        testMap.get(testRange0_5.lower) should contain ("test")
       }
 
       "put an element and retrieve it from the map by RangeKey" in {
-        val testRange = RangeKey[Int](0, 5)
-        val testMap = RangeTreeMap.apply[Int, String]
-        testMap.put(testRange, "test")
-        testMap.get(testRange) should contain ("test")
+        val testMap = emptyRangeTreeMap
+        testMap.put(testRange0_5, "test")
+        testMap.get(testRange0_5) should contain ("test")
       }
 
       "put and element in the map, retrieve it, then clear the map" in {
-        val testRange = RangeKey[Int](0, 5)
-        val testMap = RangeTreeMap.apply[Int, String]
-        testMap.put(testRange, "test")
-        testMap.get(testRange) should contain ("test")
+        val testMap = emptyRangeTreeMap
+        testMap.put(testRange0_5, "test")
+        testMap.get(testRange0_5) should contain ("test")
         testMap.clear()
-        testMap.get(testRange) shouldBe empty
+        testMap.get(testRange0_5) shouldBe empty
       }
 
       "put and element in the map, retrieve it, then remove it" in {
-        val testRange = RangeKey[Int](0, 5)
-        val testMap = RangeTreeMap.apply[Int, String]
-        testMap.put(testRange, "test")
-        testMap.get(testRange) should contain ("test")
-        testMap.remove(testRange)
-        testMap.get(testRange) shouldBe empty
+        val testMap = emptyRangeTreeMap
+        testMap.put(testRange0_5, "test")
+        testMap.get(testRange0_5) should contain ("test")
+        testMap.remove(testRange0_5)
+        testMap.get(testRange0_5) shouldBe empty
+      }
+
+      "put all of another RangeTreeMap elements in the map, then retrieve it" in {
+        val testMap1 = emptyRangeTreeMap
+        val testMap2 = emptyRangeTreeMap
+        testMap1.put(testRange0_5, "test1")
+        testMap2.put(testRange6_10, "test2")
+        testMap2.put(testRange11_13, "test3")
+        testMap1.putAll(testMap2)
+        testMap1.get(testRange0_5) should contain ("test1")
+        testMap1.get(testRange6_10) should contain ("test2")
+        testMap1.get(testRange11_13) should contain ("test3")
       }
     }
 
