@@ -45,6 +45,8 @@ _For more examples and usage, please refer to the [Wiki](https://github.com/Char
 
 ## Release History
 
+* 0.1.5
+    * Fix inclusive bugs in enclose and intersects functionality, add tests
 * 0.1.4
     * Mostly functionally complete, `putCoalescing` still needs to be finished
 
