@@ -44,6 +44,10 @@ class RangeTreeMapTest extends WordSpec with Matchers  {
         testMap1.get(testRange6_10) should contain ("test2")
         testMap1.get(testRange11_13) should contain ("test3")
       }
+
+      "return false if the range is not enclosed" in {
+        emptyRangeTreeMap.encloses(RangeKey[Int](2, 77)) should be (false)
+      }
     }
 
     "nonempty" should {
@@ -55,7 +59,6 @@ class RangeTreeMapTest extends WordSpec with Matchers  {
 
       "return false if the range is not enclosed" in {
         nonEmptyRangeTreeMap.encloses(RangeKey[Int](12, 27)) should be (false)
-
       }
 
     }
