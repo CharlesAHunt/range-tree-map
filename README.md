@@ -7,8 +7,8 @@
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/CharlesAHunt/RangeTreeMap.svg?columns=all)](https://waffle.io/CharlesAHunt/RangeTreeMap)
 [![codecov.io](http://codecov.io/github/charlesahunt/rangetreemap/coverage.svg?branch=master)](http://codecov.io/github/charlesahunt/rangetreemap?branch=master)
 
-The underlying data structure is a TreeMap backed by a Red-black tree mapping from a lower bound of K to a
- RangeEntry[K, V], sorted by an implicit Ordering[K].  Overlapping ranges are allowed with `put`, non overlapping
+The underlying data structure is a TreeMap backed by a Red-black tree mapping from a lower bound of `K` to a
+ `RangeEntry[K, V]`, sorted by an implicit `Ordering[K]`.  Overlapping ranges are allowed with `put`, non overlapping
  ranges are handled using `putCoalesce`.
 
 ## Installation
