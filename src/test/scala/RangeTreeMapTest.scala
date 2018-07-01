@@ -1,5 +1,6 @@
 import org.scalatest.{Matchers, WordSpec}
 import RangeTreeMapFixture._
+import com.charlesahunt.RangeKey
 
 class RangeTreeMapTest extends WordSpec with Matchers  {
 
@@ -47,7 +48,15 @@ class RangeTreeMapTest extends WordSpec with Matchers  {
 
     "nonempty" should {
 
-      //TODO: Nonempty test cases
+      "return true if the range is enclosed" in {
+        nonEmptyRangeTreeMap.encloses(testRange0_5) should be (true)
+        nonEmptyRangeTreeMap.encloses(RangeKey[Int](2, 7)) should be (true)
+      }
+
+      "return false if the range is not enclosed" in {
+        nonEmptyRangeTreeMap.encloses(RangeKey[Int](12, 27)) should be (false)
+
+      }
 
     }
   }

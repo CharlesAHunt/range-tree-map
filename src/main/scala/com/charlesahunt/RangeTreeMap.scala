@@ -68,10 +68,10 @@ class RangeTreeMap[K, V](initialMap: Option[mutable.TreeMap[K, RangeEntry[K, V]]
   }
 
   /**
-    * Checks if the given range is inclusively within the lowest lower bound and the greatest upper bound of the entire RangeTreeMap
+    * Checks if the given range is completely, inclusively within the lowest lower bound and the greatest upper bound of the entire RangeTreeMap
     *
     * @param range the range to check for enclosure
-    * @return
+    * @return True if given range is equal to or within the bounds of the entire RangeTreeMap
     */
   def encloses(range: RangeKey[K]): Boolean =
     (ordering.gteq(range.lower, rangeTreeMap.head._2.range.lower) && ordering.lteq(range.lower, rangeTreeMap.last._2.range.upper)) &&
@@ -81,7 +81,7 @@ class RangeTreeMap[K, V](initialMap: Option[mutable.TreeMap[K, RangeEntry[K, V]]
     * Finds all inclusively intersecting ranges with `subRange` in the map
     *
     * @param subRange
-    * @return
+    * @return a TreeMap of all intersecting ranges of `subRange` within the RangeTreeMap
     */
   def intersection(subRange: RangeKey[K]): mutable.TreeMap[K, RangeEntry[K, V]] =
     rangeTreeMap.filter { entry =>
