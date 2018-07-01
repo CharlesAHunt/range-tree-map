@@ -7,11 +7,9 @@
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/CharlesAHunt/RangeTreeMap.svg?columns=all)](https://waffle.io/CharlesAHunt/RangeTreeMap)
 [![codecov.io](http://codecov.io/github/charlesahunt/rangetreemap/coverage.svg?branch=master)](http://codecov.io/github/charlesahunt/rangetreemap?branch=master)
 
-A supplemental Scala collection for mapping from ranges to values based on a TreeMap.
-
-The underlying structure is a map from a lower bound to a RangeEntry.  If you have two ranges with the same lower bound,
-the second range needs have a higher lower bound, ideally greater than or equal to the upper bound of the other range so
-ranges don't overlap.
+The underlying data structure is a TreeMap backed by a Red-black tree mapping from a lower bound of K to a
+ RangeEntry[K, V], sorted by an implicit Ordering[K].  Overlapping ranges are allowed with `put`, non overlapping
+ ranges are handled using `putCoalesce`.
 
 ## Installation
 
