@@ -6,8 +6,8 @@ import scala.collection.mutable
   * A data structure backed by a mutable TreeMap where numeric ranges map to values and where the key, K, is the lower bound.
   *
   * @param initialMap Optional TreeMap structure to initialize RangeTreeMap
-  * @param ordering
-  * @tparam K some number type
+  * @param ordering   A strategy for sorting instances of a type
+  * @tparam K some type with an Ordering defined for it
   * @tparam V any value
   */
 class RangeTreeMap[K, V](initialMap: Option[mutable.TreeMap[K, RangeEntry[K, V]]] = None)(implicit ordering : scala.Ordering[K]) {
@@ -22,12 +22,7 @@ class RangeTreeMap[K, V](initialMap: Option[mutable.TreeMap[K, RangeEntry[K, V]]
 
   def clear(): Unit = rangeTreeMap.clear
 
-  /**
-    * @param key - The lower bound of the range to retrieve
-    */
-  def get(key: K): Option[V] = rangeTreeMap.get(key).map(_.value)
-
-  def get(range: RangeKey[K]): Option[V] = get(range.lower)
+  def get(range: RangeKey[K]): Option[V] = rangeTreeMap.get(range.lower).map(_.value)
 
   /**
     * Puts given value in map. Does not coalesce ranges.
@@ -69,31 +64,40 @@ class RangeTreeMap[K, V](initialMap: Option[mutable.TreeMap[K, RangeEntry[K, V]]
       val lowerMatch = intersections.get(range.lower)
       if(intersections.isEmpty && lowerMatch.isEmpty) put(range, value)
       else {
-        //TODO: https://github.com/CharlesAHunt/RangeTreeMap/issues/1
         throw new Exception("Coalescing of intersecting ranges not yet implemented.")
       }
     }
 
   /**
-    * Checks if the given range is within the lowest lower bound and the greatest upper bound of the entire RangeTreeMap
+    * Checks if the given range is inclusively within the lowest lower bound and the greatest upper bound of the entire RangeTreeMap
     *
     * @param range the range to check for enclosure
     * @return
     */
   def encloses(range: RangeKey[K]): Boolean =
-    (ordering.gt(range.lower, rangeTreeMap.head._2.range.lower) && ordering.lt(range.lower, rangeTreeMap.last._2.range.upper)) ||
-      (ordering.lt(range.upper, rangeTreeMap.last._2.range.upper) && ordering.gt(range.upper, rangeTreeMap.head._2.range.lower))
+    (ordering.gteq(range.lower, rangeTreeMap.head._2.range.lower) && ordering.lteq(range.lower, rangeTreeMap.last._2.range.upper)) &&
+      (ordering.lteq(range.upper, rangeTreeMap.last._2.range.upper) && ordering.gteq(range.upper, rangeTreeMap.head._2.range.lower))
 
-
+  /**
+    * Finds all inclusively intersecting ranges with `subRange` in the map
+    *
+    * @param subRange
+    * @return
+    */
   def intersection(subRange: RangeKey[K]): mutable.TreeMap[K, RangeEntry[K, V]] =
-    rangeTreeMap.filter(entry =>ordering.lt(entry._2.range.lower, subRange.upper) && ordering.gt(entry._2.range.upper, subRange.lower))
+    rangeTreeMap.filter { entry =>
+      ordering.lteq(entry._2.range.lower, subRange.upper) && ordering.gteq(entry._2.range.upper, subRange.lower)
+    }
 
 }
 
 object RangeTreeMap {
+
   def apply[K, V](implicit ordering : scala.Ordering[K]): RangeTreeMap[K, V] = new RangeTreeMap[K, V]
+
   def apply[K, V](initialMap: Option[mutable.TreeMap[K, RangeEntry[K, V]]])(implicit ordering : scala.Ordering[K]): RangeTreeMap[K, V] =
     new RangeTreeMap[K, V](initialMap)
+
 }
 
 final case class RangeKey[K](lower: K, upper: K)

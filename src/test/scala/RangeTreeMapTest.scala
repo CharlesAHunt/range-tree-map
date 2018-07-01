@@ -10,12 +10,6 @@ class RangeTreeMapTest extends WordSpec with Matchers  {
         emptyRangeTreeMap.span() shouldBe empty
       }
 
-      "put an element and retrieve it from the map by lower bound" in {
-        val testMap = emptyRangeTreeMap
-        testMap.put(testRange0_5, "test")
-        testMap.get(testRange0_5.lower) should contain ("test")
-      }
-
       "put an element and retrieve it from the map by RangeKey" in {
         val testMap = emptyRangeTreeMap
         testMap.put(testRange0_5, "test")
