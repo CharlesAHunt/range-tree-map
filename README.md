@@ -1,5 +1,5 @@
 # RangeTreeMap
-> A generic map from ranges to values based on a TreeMap.
+> A generic map from ranges to values based on a TreeMap backed by Scala's red-black tree.
 
 [![CircleCI](https://circleci.com/gh/CharlesAHunt/RangeTreeMap.svg?style=shield)](https://circleci.com/gh/CharlesAHunt/RangeTreeMap)
 [![Latest version](https://index.scala-lang.org/charlesahunt/rangetreemap/range-tree-map/latest.svg?color=blue)](https://index.scala-lang.org/charlesahunt/rangetreemap/range-tree-map)
@@ -18,13 +18,13 @@ ranges don't overlap.
 sbt
 
 ```sh
-"com.charlesahunt" %% "range-tree-map" % "0.1.4"
+"com.charlesahunt" %% "range-tree-map" % "0.1.5"
 ```
 
 mill
 
 ```sh
-ivy"com.charlesahunt::range-tree-map:0.1.4"
+ivy"com.charlesahunt::range-tree-map:0.1.5"
 ```
 
 ## Usage example
