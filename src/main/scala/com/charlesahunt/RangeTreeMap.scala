@@ -1,5 +1,6 @@
 package com.charlesahunt
 
+import scala.collection.immutable.TreeMap
 import scala.collection.mutable
 
 /**
@@ -10,9 +11,9 @@ import scala.collection.mutable
   * @tparam K some type with an Ordering defined for it
   * @tparam V any value
   */
-class RangeTreeMap[K, V](initialMap: Option[mutable.TreeMap[K, RangeEntry[K, V]]] = None)(implicit ordering : scala.Ordering[K]) {
+class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None)(implicit ordering : scala.Ordering[K]) {
 
-  val rangeTreeMap: mutable.TreeMap[K, RangeEntry[K, V]] = initialMap.getOrElse(new mutable.TreeMap[K, RangeEntry[K, V]])
+  val rangeTreeMap: mutable.TreeMap[K, RangeEntry[K, V]] = new mutable.TreeMap[K, RangeEntry[K, V]].++(initialMap.getOrElse(Map.empty))
 
   /**
     * Returns a view of this range map as an unmodifiable Map[Range[K], V].
@@ -48,20 +49,30 @@ class RangeTreeMap[K, V](initialMap: Option[mutable.TreeMap[K, RangeEntry[K, V]]
     rangeTreeMap.headOption.map(head => RangeKey(head._1, rangeTreeMap.last._1))
 
   /**
-    * Returns a view of the part of this range map that intersects with range.
+    * Returns a view of the part of this range map that intersects/overlaps with range.
     */
-  def subRangeMap(subRange: RangeKey[K]): RangeTreeMap[K, V] =
-    RangeTreeMap.apply[K, V](Some(intersection(subRange)))
+  def subRangeMap(subRange: RangeKey[K]): RangeTreeMap[K, V] = {
+    RangeTreeMap.apply[K, V](
+      intersections(subRange)
+        .flatMap(intersect => intersection(intersect._2.range, subRange).map(_ -> intersect._2.value))
+        .toMap.map(kv => kv._1.lower -> RangeEntry(kv._1, kv._2))
+    )
+  }
 
   /**
-    * Maps a range to a specified value, coalescing this range with any existing ranges with the same value that are connected to this range.
+    * Maps a range to a specified value, coalescing this range with any existing ranges with the same value that
+    *   are connected to this range.
+    * How does this work?
+    *   1 - Find all intersecting ranges
+    *   2 - Remove all intersecting ranges
+    *   3 - Put all disjoint ranges of intersecting ranges with new range into map
+    *   4 - Put the whole new range
     */
   def putCoalescing(range: RangeKey[K], value: V): Option[RangeEntry[K, V]] = {
     if (rangeTreeMap.nonEmpty && encloses(range)) {
-      intersection(range).foreach { intersection =>
-        //TODO: https://github.com/CharlesAHunt/RangeTreeMap/issues/1
-        //TODO Create new subranges from the existing ranges that do not overlap with the new range
-        throw new Exception("Coalescing of intersecting ranges not yet implemented.")
+      intersections(range).foreach { intersection =>
+        rangeTreeMap.remove(intersection._1)
+        disjoint(range, intersection._2.range).map(put(_, intersection._2.value))
       }
     }
     put(range, value)
@@ -89,10 +100,36 @@ class RangeTreeMap[K, V](initialMap: Option[mutable.TreeMap[K, RangeEntry[K, V]]
     * @param subRange the range to check for intersection with any range in RangeTreeMap
     * @return a TreeMap of all intersecting ranges of `subRange` within the RangeTreeMap
     */
-  def intersection(subRange: RangeKey[K]): mutable.TreeMap[K, RangeEntry[K, V]] =
+  def intersections(subRange: RangeKey[K]): mutable.TreeMap[K, RangeEntry[K, V]] =
     rangeTreeMap.filter { entry =>
       ordering.lteq(entry._2.range.lower, subRange.upper) && ordering.gteq(entry._2.range.upper, subRange.lower)
     }
+
+  /**
+    * Yields the intersection range of rangeKey1 and angeKey2
+    */
+  def intersection(rangeKey1: RangeKey[K], rangeKey2: RangeKey[K]): Option[RangeKey[K]] = {
+    for {
+      lowerIntersectionBound <- {
+        if (ordering.lteq(rangeKey2.upper, rangeKey1.upper) && ordering.gteq(rangeKey2.upper, rangeKey1.lower)) Some(rangeKey2.upper)
+        else if (ordering.gteq(rangeKey2.upper, rangeKey1.upper) && ordering.lteq(rangeKey2.lower, rangeKey1.upper)) Some(rangeKey1.upper)
+        else None
+      }
+      upperIntersectionBound <- {
+        if (ordering.gteq(rangeKey1.lower, rangeKey2.lower) && ordering.lteq(rangeKey1.lower, rangeKey2.upper)) Some(rangeKey1.lower)
+        else if (ordering.lteq(rangeKey1.lower, rangeKey2.lower) && ordering.gteq(rangeKey1.upper, rangeKey2.lower)) Some(rangeKey2.lower)
+        else None
+      }
+    } yield RangeKey(lowerIntersectionBound, upperIntersectionBound)
+  }
+
+  /**
+    * Yields the disjoint ranges of rangeKey1 and rangeKey2
+    */
+  def disjoint(rangeKey1: RangeKey[K], rangeKey2: RangeKey[K]): Set[RangeKey[K]] = {
+    Set(rangeKey1)
+    Set(rangeKey2)
+  }
 
 }
 
@@ -100,8 +137,11 @@ object RangeTreeMap {
 
   def apply[K, V](implicit ordering : scala.Ordering[K]): RangeTreeMap[K, V] = new RangeTreeMap[K, V]
 
-  def apply[K, V](initialMap: Option[mutable.TreeMap[K, RangeEntry[K, V]]])(implicit ordering : scala.Ordering[K]): RangeTreeMap[K, V] =
-    new RangeTreeMap[K, V](initialMap)
+  def apply[K, V](initialMap: TreeMap[K, RangeEntry[K, V]])(implicit ordering : scala.Ordering[K]): RangeTreeMap[K, V] =
+    new RangeTreeMap[K, V](Some(initialMap))
+
+  def apply[K, V](initialMap: Map[K, RangeEntry[K, V]])(implicit ordering : scala.Ordering[K]): RangeTreeMap[K, V] =
+    new RangeTreeMap[K, V](Some(new TreeMap() ++ initialMap))
 
 }
 

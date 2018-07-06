@@ -2,6 +2,9 @@ import org.scalatest.{Matchers, WordSpec}
 import RangeTreeMapFixture._
 import com.charlesahunt.RangeKey
 
+/**
+  * TODO: Tests for: subRangeMap, putCoalescing, and intersection
+  */
 class RangeTreeMapTest extends WordSpec with Matchers  {
 
   "A RangeTreeMap" when {
@@ -9,6 +12,10 @@ class RangeTreeMapTest extends WordSpec with Matchers  {
 
       "have an empty span" in {
         emptyRangeTreeMap.span() shouldBe empty
+      }
+
+      "have an empty map of ranges" in {
+        emptyRangeTreeMap.asMapOfRanges() shouldBe empty
       }
 
       "put an element and retrieve it from the map by RangeKey" in {
@@ -59,6 +66,10 @@ class RangeTreeMapTest extends WordSpec with Matchers  {
 
       "return false if the range is not enclosed" in {
         nonEmptyRangeTreeMap.encloses(RangeKey[Int](12, 27)) should be (false)
+      }
+
+      "have a map of ranges" in {
+        nonEmptyRangeTreeMap.asMapOfRanges() shouldEqual Map(testRange0_5 -> "test1", testRange6_10 -> "test2")
       }
 
     }

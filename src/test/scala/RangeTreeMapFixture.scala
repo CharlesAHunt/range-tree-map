@@ -11,7 +11,7 @@ object RangeTreeMapFixture {
 
   def nonEmptyRangeTreeMap: RangeTreeMap[Int, String] ={
     val r = RangeTreeMap.apply[Int, String]
-    r.put(testRange0_5, "test")
+    r.put(testRange0_5, "test1")
     r.put(testRange6_10, "test2")
     r
   }
