@@ -124,11 +124,22 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
   }
 
   /**
-    * Yields the disjoint ranges of rangeKey1 and rangeKey2
+    * Yields the disjoint(non-overlapping) ranges of rangeKey1 and rangeKey2
+    *
+    * There can exist 0, 1, or 2 possible disjoint Ranges from any two given rangeKeys
+    *
+    * //TODO: Still work todo here to be 100% correct, also need to clean up/refactor to be functional
     */
   def disjoint(rangeKey1: RangeKey[K], rangeKey2: RangeKey[K]): Set[RangeKey[K]] = {
-    Set(rangeKey1)
-    Set(rangeKey2)
+    val oMap = mutable.SortedMap[K, Int](rangeKey1.lower -> 1, rangeKey1.upper -> 1, rangeKey2.lower -> 2, rangeKey2.upper -> 2)
+    val lowestDisjointLowerBound = if(!ordering.equiv(rangeKey1.lower, rangeKey2.lower)) Some(oMap.head._1) else None
+    val lowestDisjointUpperBound = oMap.tail.head._1
+    val highestDisjointLowerBound = oMap.tail.tail.head._1
+    val highestDisjointUpperBound = if(!ordering.equiv(rangeKey1.upper, rangeKey2.upper)) Some(oMap.last._1) else None
+    Set(
+      lowestDisjointLowerBound.map(RangeKey(_, lowestDisjointUpperBound)),
+      highestDisjointUpperBound.map(RangeKey(highestDisjointLowerBound, _))
+    ).flatten[RangeKey[K]]
   }
 
 }
