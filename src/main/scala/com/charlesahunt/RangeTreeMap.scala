@@ -12,7 +12,7 @@ import scala.collection.mutable
   * @tparam V any value
   */
 class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None)(implicit ordering : scala.Ordering[K]) {
-
+  import RangeTreeMap._
   val rangeTreeMap: mutable.TreeMap[K, RangeEntry[K, V]] = new mutable.TreeMap[K, RangeEntry[K, V]].++(initialMap.getOrElse(Map.empty))
 
   /**
@@ -72,7 +72,10 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
     if (rangeTreeMap.nonEmpty && encloses(range)) {
       intersections(range).foreach { intersection =>
         rangeTreeMap.remove(intersection._1)
-        disjoint(range, intersection._2.range).map(put(_, intersection._2.value))
+        disjoint(range, intersection._2.range).map { disjointRange =>
+          if(equiv(disjointRange.lower, range.lower) || equiv(disjointRange.upper, range.upper))
+            put(disjointRange, intersection._2.value)
+        }
       }
     }
     put(range, value)
@@ -89,8 +92,8 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
       headLowerBound <- rangeTreeMap.headOption.map(_._2.range.lower)
       lastUpperBound <- rangeTreeMap.lastOption.map(_._2.range.upper)
     } yield {
-      (ordering.gteq(range.lower, headLowerBound) && ordering.lteq(range.lower, lastUpperBound)) &&
-        (ordering.lteq(range.upper, lastUpperBound) && ordering.gteq(range.upper, headLowerBound))
+      (gteq(range.lower, headLowerBound) && lteq(range.lower, lastUpperBound)) &&
+        (lteq(range.upper, lastUpperBound) && gteq(range.upper, headLowerBound))
     })
     .getOrElse(false)
 
@@ -102,7 +105,7 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
     */
   def intersections(subRange: RangeKey[K]): mutable.TreeMap[K, RangeEntry[K, V]] =
     rangeTreeMap.filter { entry =>
-      ordering.lteq(entry._2.range.lower, subRange.upper) && ordering.gteq(entry._2.range.upper, subRange.lower)
+      lteq(entry._2.range.lower, subRange.upper) && gteq(entry._2.range.upper, subRange.lower)
     }
 
   /**
@@ -111,13 +114,13 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
   def intersection(rangeKey1: RangeKey[K], rangeKey2: RangeKey[K]): Option[RangeKey[K]] = {
     for {
       lowerIntersectionBound <- {
-        if (ordering.lteq(rangeKey2.upper, rangeKey1.upper) && ordering.gteq(rangeKey2.upper, rangeKey1.lower)) Some(rangeKey2.upper)
-        else if (ordering.gteq(rangeKey2.upper, rangeKey1.upper) && ordering.lteq(rangeKey2.lower, rangeKey1.upper)) Some(rangeKey1.upper)
+        if (lteq(rangeKey2.upper, rangeKey1.upper) && gteq(rangeKey2.upper, rangeKey1.lower)) Some(rangeKey2.upper)
+        else if (gteq(rangeKey2.upper, rangeKey1.upper) && lteq(rangeKey2.lower, rangeKey1.upper)) Some(rangeKey1.upper)
         else None
       }
       upperIntersectionBound <- {
-        if (ordering.gteq(rangeKey1.lower, rangeKey2.lower) && ordering.lteq(rangeKey1.lower, rangeKey2.upper)) Some(rangeKey1.lower)
-        else if (ordering.lteq(rangeKey1.lower, rangeKey2.lower) && ordering.gteq(rangeKey1.upper, rangeKey2.lower)) Some(rangeKey2.lower)
+        if (gteq(rangeKey1.lower, rangeKey2.lower) && lteq(rangeKey1.lower, rangeKey2.upper)) Some(rangeKey1.lower)
+        else if (lteq(rangeKey1.lower, rangeKey2.lower) && gteq(rangeKey1.upper, rangeKey2.lower)) Some(rangeKey2.lower)
         else None
       }
     } yield RangeKey(lowerIntersectionBound, upperIntersectionBound)
@@ -128,14 +131,14 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
     *
     * There can exist 0, 1, or 2 possible disjoint Ranges from any two given rangeKeys
     *
-    * //TODO: Still work todo here to be 100% correct, also need to clean up/refactor to be functional
+    * //TODO: Functional cleanup/refactor
     */
   def disjoint(rangeKey1: RangeKey[K], rangeKey2: RangeKey[K]): Set[RangeKey[K]] = {
-    val oMap = mutable.SortedMap[K, Int](rangeKey1.lower -> 1, rangeKey1.upper -> 1, rangeKey2.lower -> 2, rangeKey2.upper -> 2)
-    val lowestDisjointLowerBound = if(!ordering.equiv(rangeKey1.lower, rangeKey2.lower)) Some(oMap.head._1) else None
-    val lowestDisjointUpperBound = oMap.tail.head._1
-    val highestDisjointLowerBound = oMap.tail.tail.head._1
-    val highestDisjointUpperBound = if(!ordering.equiv(rangeKey1.upper, rangeKey2.upper)) Some(oMap.last._1) else None
+    val sortedRangeKeys = List(rangeKey1.lower, rangeKey1.upper, rangeKey2.lower, rangeKey2.upper).sorted
+    val lowestDisjointLowerBound = if(!equiv(rangeKey1.lower, rangeKey2.lower)) Some(sortedRangeKeys.head) else None
+    val lowestDisjointUpperBound = sortedRangeKeys.tail.head
+    val highestDisjointLowerBound = sortedRangeKeys.tail.tail.head
+    val highestDisjointUpperBound = if(!equiv(rangeKey1.upper, rangeKey2.upper)) Some(sortedRangeKeys.last) else None
     Set(
       lowestDisjointLowerBound.map(RangeKey(_, lowestDisjointUpperBound)),
       highestDisjointUpperBound.map(RangeKey(highestDisjointLowerBound, _))
@@ -154,6 +157,14 @@ object RangeTreeMap {
   def apply[K, V](initialMap: Map[K, RangeEntry[K, V]])(implicit ordering : scala.Ordering[K]): RangeTreeMap[K, V] =
     new RangeTreeMap[K, V](Some(new TreeMap() ++ initialMap))
 
+  def equiv[K](value1: K, value2: K)(implicit ordering : scala.Ordering[K]): Boolean =
+    ordering.equiv(value1, value2)
+
+  def gteq[K](value1: K, value2: K)(implicit ordering : scala.Ordering[K]): Boolean =
+    ordering.gteq(value1, value2)
+
+  def lteq[K](value1: K, value2: K)(implicit ordering : scala.Ordering[K]): Boolean =
+    ordering.lteq(value1, value2)
 }
 
 final case class RangeKey[K](lower: K, upper: K)
