@@ -16,13 +16,13 @@ The underlying data structure is a TreeMap backed by a Red-black tree mapping fr
 sbt
 
 ```sh
-"com.charlesahunt" %% "range-tree-map" % "0.1.5"
+"com.charlesahunt" %% "range-tree-map" % "0.2.1"
 ```
 
 mill
 
 ```sh
-ivy"com.charlesahunt::range-tree-map:0.1.5"
+ivy"com.charlesahunt::range-tree-map:0.2.1"
 ```
 
 ## Usage example
