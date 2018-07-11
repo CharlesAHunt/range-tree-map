@@ -68,8 +68,32 @@ class RangeTreeMapTest extends WordSpec with Matchers  {
         nonEmptyRangeTreeMap.encloses(RangeKey[Int](12, 27)) should be (false)
       }
 
-      "have a map of ranges" in {
+      "return the ranges successfully as a map of ranges" in {
         nonEmptyRangeTreeMap.asMapOfRanges() shouldEqual Map(testRange0_5 -> "test1", testRange6_10 -> "test2")
+      }
+
+      "return disjoint sets for non overlapping ranges" in {
+        nonEmptyRangeTreeMap.disjoint(testRange0_5, testRange6_10) shouldEqual Set(testRange0_5, testRange6_10)
+      }
+
+      "return no disjoint sets for fully overlapping ranges" in {
+        nonEmptyRangeTreeMap.disjoint(testRange0_5, testRange0_5) shouldEqual Set()
+      }
+
+      "return disjoint sets for partially overlapping ranges" in {
+        nonEmptyRangeTreeMap.disjoint(testRange0_5, testRange2_7) shouldEqual Set(RangeKey(0,2), RangeKey(5,7))
+      }
+
+      "return nothing for non overlapping ranges" in {
+        nonEmptyRangeTreeMap.intersection(testRange0_5, testRange6_10) shouldEqual None
+      }
+
+      "return intersection range for fully overlapping ranges" in {
+        nonEmptyRangeTreeMap.intersection(testRange0_5, testRange0_5) shouldEqual Some(testRange0_5)
+      }
+
+      "return intersection range for partially overlapping ranges" in {
+        nonEmptyRangeTreeMap.intersection(testRange0_5, testRange2_7) shouldEqual Some(RangeKey[Int](2, 5))
       }
 
     }

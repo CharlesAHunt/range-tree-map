@@ -113,12 +113,12 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
     */
   def intersection(rangeKey1: RangeKey[K], rangeKey2: RangeKey[K]): Option[RangeKey[K]] = {
     for {
-      lowerIntersectionBound <- {
+      upperIntersectionBound <- {
         if (lteq(rangeKey2.upper, rangeKey1.upper) && gteq(rangeKey2.upper, rangeKey1.lower)) Some(rangeKey2.upper)
         else if (gteq(rangeKey2.upper, rangeKey1.upper) && lteq(rangeKey2.lower, rangeKey1.upper)) Some(rangeKey1.upper)
         else None
       }
-      upperIntersectionBound <- {
+      lowerIntersectionBound <- {
         if (gteq(rangeKey1.lower, rangeKey2.lower) && lteq(rangeKey1.lower, rangeKey2.upper)) Some(rangeKey1.lower)
         else if (lteq(rangeKey1.lower, rangeKey2.lower) && gteq(rangeKey1.upper, rangeKey2.lower)) Some(rangeKey2.lower)
         else None

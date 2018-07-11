@@ -2,7 +2,7 @@ name := "range-tree-map"
 
 description := "A datastructure mapping ranges to values based on a TreeMap"
 
-version := "0.2.1"
+version := "0.2.2"
 
 organization := "com.charlesahunt"
 

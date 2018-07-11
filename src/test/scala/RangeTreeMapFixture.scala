@@ -3,6 +3,7 @@ import com.charlesahunt.{RangeKey, RangeTreeMap}
 object RangeTreeMapFixture {
 
   val testRange0_5 = RangeKey[Int](0, 5)
+  val testRange2_7 = RangeKey[Int](2, 7)
   val testRange6_10 = RangeKey[Int](6, 10)
   val testRange11_13 = RangeKey[Int](11, 13)
 
