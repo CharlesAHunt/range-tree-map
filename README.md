@@ -1,6 +1,8 @@
 # RangeTreeMap
 > A generic map from ranges to values based on a TreeMap backed by Scala's red-black tree.
 
+Alpakka [![scaladex-badge][]][scaladex] [![maven-central-badge][]][maven-central] [![travis-badge][]][travis] [![gitter-badge][]][gitter]
+
 [![CircleCI](https://circleci.com/gh/CharlesAHunt/RangeTreeMap.svg?style=shield)](https://circleci.com/gh/CharlesAHunt/RangeTreeMap)
 [scaladex-badge]:        https://index.scala-lang.org/akka/alpakka/latest.svg
 [![Latest version](https://index.scala-lang.org/charlesahunt/rangetreemap/range-tree-map/latest.svg?color=blue)](https://index.scala-lang.org/charlesahunt/rangetreemap/range-tree-map)
