@@ -2,6 +2,12 @@
 > A generic map from ranges to values based on a TreeMap backed by Scala's red-black tree.
 
 [![CircleCI](https://circleci.com/gh/CharlesAHunt/RangeTreeMap.svg?style=shield)](https://circleci.com/gh/CharlesAHunt/RangeTreeMap)
+
+[![scaladex-badge][]][scaladex]
+
+[scaladex]:              https://index.scala-lang.org/akka/alpakka
+[scaladex-badge]:        https://index.scala-lang.org/akka/alpakka/latest.svg
+
 [![Latest version](https://index.scala-lang.org/charlesahunt/rangetreemap/range-tree-map/latest.svg?color=blue)](https://index.scala-lang.org/charlesahunt/rangetreemap/range-tree-map)
 [![Maven Central](https://img.shields.io/maven-central/v/com.charlesahunt/range-tree-map_2.12.svg?color=green)](https://maven-badges.herokuapp.com/maven-central/com.charlesahunt/range-tree-map_2.12)
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/CharlesAHunt/RangeTreeMap.svg?columns=all)](https://waffle.io/CharlesAHunt/RangeTreeMap)
