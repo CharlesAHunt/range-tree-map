@@ -5,8 +5,8 @@
 
 [![scaladex-badge][]][scaladex]
 
-[scaladex]:              https://index.scala-lang.org/charlesahunt/range-tree-map
-[scaladex-badge]:        https://index.scala-lang.org/charlesahunt/range-tree-map/latest.svg
+[scaladex]:              https://index.scala-lang.org/charlesahunt/rangetreemap/range-tree-map
+[scaladex-badge]:        https://index.scala-lang.org/charlesahunt/rangetreemap/range-tree-map/latest.svg
 
 [![Latest version](https://index.scala-lang.org/charlesahunt/rangetreemap/range-tree-map/latest.svg?color=blue)](https://index.scala-lang.org/charlesahunt/rangetreemap/range-tree-map)
 [![Maven Central](https://img.shields.io/maven-central/v/com.charlesahunt/range-tree-map_2.12.svg?color=green)](https://maven-badges.herokuapp.com/maven-central/com.charlesahunt/range-tree-map_2.12)
