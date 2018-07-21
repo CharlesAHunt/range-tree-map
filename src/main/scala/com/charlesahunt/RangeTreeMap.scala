@@ -27,9 +27,26 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
 
   /**
     * Puts given value in map. Does not coalesce ranges.
+    *
+    * * How does this work?
+    * *   1 - Find all intersecting ranges
+    * *   2 - Remove all intersecting ranges
+    * *   3 - Put all disjoint ranges of intersecting ranges with new range into map
+    * *   4 - Put the whole new range
+    *
     */
-  def put(range: RangeKey[K], value: V): Option[RangeEntry[K, V]] =
+  def put(range: RangeKey[K], value: V): Option[RangeEntry[K, V]] = {
+    if (rangeTreeMap.nonEmpty) {
+      intersections(range).foreach { intersecting =>
+        rangeTreeMap.remove(intersecting._1)
+        disjoint(range, intersecting._2.range).map { disjointRange =>
+          if(intersection(disjointRange, range).isEmpty)
+            rangeTreeMap.put(disjointRange.lower, RangeEntry(disjointRange, intersecting._2.value))
+        }
+      }
+    }
     rangeTreeMap.put(range.lower, RangeEntry(range, value))
+  }
 
   /**
     * Puts all the associations from rangeMap into this range map.
@@ -62,22 +79,9 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
   /**
     * Maps a range to a specified value, coalescing this range with any existing ranges with the same value that
     *   are connected to this range.
-    * How does this work?
-    *   1 - Find all intersecting ranges
-    *   2 - Remove all intersecting ranges
-    *   3 - Put all disjoint ranges of intersecting ranges with new range into map
-    *   4 - Put the whole new range
     */
   def putCoalescing(range: RangeKey[K], value: V): Option[RangeEntry[K, V]] = {
-    if (rangeTreeMap.nonEmpty && encloses(range)) {
-      intersections(range).foreach { intersection =>
-        rangeTreeMap.remove(intersection._1)
-        disjoint(range, intersection._2.range).map { disjointRange =>
-          if(equiv(disjointRange.lower, range.lower) || equiv(disjointRange.upper, range.upper))
-            put(disjointRange, intersection._2.value)
-        }
-      }
-    }
+    //TODO: Coalesce ranges with equal values
     put(range, value)
   }
 
