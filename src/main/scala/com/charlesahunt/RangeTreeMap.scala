@@ -39,7 +39,7 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
     if (rangeTreeMap.nonEmpty) {
       intersections(range).foreach { intersecting =>
         rangeTreeMap.remove(intersecting._1)
-        disjoint(range, intersecting._2.range).map { disjointRange =>
+        disjoint(range, intersecting._2.range).foreach { disjointRange =>
           if(intersection(disjointRange, range).isEmpty)
             rangeTreeMap.put(disjointRange.lower, RangeEntry(disjointRange, intersecting._2.value))
         }

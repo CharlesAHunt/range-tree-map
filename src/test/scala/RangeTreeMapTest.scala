@@ -3,7 +3,7 @@ import RangeTreeMapFixture._
 import com.charlesahunt.RangeKey
 
 /**
-  * TODO: Tests for: subRangeMap, putCoalescing, and intersection
+  * TODO: Tests for: subRangeMap, putCoalescing
   */
 class RangeTreeMapTest extends WordSpec with Matchers  {
 
