@@ -15,13 +15,13 @@ The underlying data structure is a TreeMap backed by a Red-black tree mapping fr
 sbt
 
 ```sh
-"com.charlesahunt" %% "range-tree-map" % "0.2.3"
+"com.charlesahunt" %% "range-tree-map" % "0.3.0"
 ```
 
 mill
 
 ```sh
-ivy"com.charlesahunt::range-tree-map:0.2.3"
+ivy"com.charlesahunt::range-tree-map:0.3.0"
 ```
 
 ## Usage example
@@ -42,6 +42,10 @@ _For more examples and usage, please refer to the [Wiki](https://github.com/Char
 
 ## Release History
 
+* 0.3.0
+    * Complete putCoalesce - First release with full functionality
+* 0.2.3
+    * Fix put to create discreet ranges, refactor putCoalesce which still needs to be completed
 * 0.2.2
     * Fix bug with intersection which reverses the result lower and upper bound in the RangeKey
 * 0.2.1

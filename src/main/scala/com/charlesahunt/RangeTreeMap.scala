@@ -81,8 +81,13 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
     *   are connected to this range.
     */
   def putCoalescing(range: RangeKey[K], value: V): Option[RangeEntry[K, V]] = {
-    //TODO: Coalesce ranges with equal values
-    put(range, value)
+    intersections(range).flatMap { i =>
+      if(i._2.value == value) {
+        remove(i._2.range)
+        Some(RangeKey(ordering.min(range.lower, i._2.range.lower),
+        ordering.max(range.upper, i._2.range.upper)))
+      } else None
+    }.flatMap(coal => put(coal, value)).headOption //TODO: This can still produce multiple ranges if there are > 1 intersections with the same value
   }
 
   /**
