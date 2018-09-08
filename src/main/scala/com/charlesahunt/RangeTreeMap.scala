@@ -80,14 +80,21 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
     * Maps a range to a specified value, coalescing this range with any existing ranges with the same value that
     *   are connected to this range.
     */
-  def putCoalescing(range: RangeKey[K], value: V): Option[RangeEntry[K, V]] = {
-    intersections(range).flatMap { i =>
-      if(i._2.value == value) {
-        remove(i._2.range)
-        Some(RangeKey(ordering.min(range.lower, i._2.range.lower),
-        ordering.max(range.upper, i._2.range.upper)))
-      } else None
-    }.flatMap(coal => put(coal, value)).headOption //TODO: This can still produce multiple ranges if there are > 1 intersections with the same value
+  def putCoalescing(range: RangeKey[K], value: V): mutable.TreeMap[K, RangeEntry[K, V]] = {
+    intersections(range).flatMap { intersection =>
+      remove(intersection._2.range)
+      //TODO: Minor: This can still produce multiple, new, overlapping ranges with the same value created if there are > 1 intersections with the same value
+      if(intersection._2.value == value)
+          put(RangeKey(ordering.min(range.lower, intersection._2.range.lower), ordering.max(range.upper, intersection._2.range.upper)), value)
+      else {
+        if(lt(intersection._2.range.lower, range.lower))
+          put(RangeKey(intersection._2.range.lower, range.lower), intersection._2.value)
+        if(gt(intersection._2.range.upper, range.upper))
+          put(RangeKey(range.upper, intersection._2.range.upper), intersection._2.value)
+        put(range, value)
+      }
+    }
+    rangeTreeMap
   }
 
   /**
@@ -109,7 +116,7 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
   /**
     * Finds all inclusively intersecting ranges with `subRange` in the map
     *
-    * @param subRange the range to check for intersection with any range in RangeTreeMap
+    * @param subRage the range to check for intersection with any range in RangeTreeMap
     * @return a TreeMap of all intersecting ranges of `subRange` within the RangeTreeMap
     */
   def intersections(subRange: RangeKey[K]): mutable.TreeMap[K, RangeEntry[K, V]] =
@@ -118,7 +125,7 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
     }
 
   /**
-    * Yields the intersection range of rangeKey1 and angeKey2
+    * Yields the intersection range of rangeKey1 and rangeKey2
     */
   def intersection(rangeKey1: RangeKey[K], rangeKey2: RangeKey[K]): Option[RangeKey[K]] = {
     for {
@@ -174,6 +181,12 @@ object RangeTreeMap {
 
   def lteq[K](value1: K, value2: K)(implicit ordering : scala.Ordering[K]): Boolean =
     ordering.lteq(value1, value2)
+
+  def gt[K](value1: K, value2: K)(implicit ordering : scala.Ordering[K]): Boolean =
+    ordering.gt(value1, value2)
+
+  def lt[K](value1: K, value2: K)(implicit ordering : scala.Ordering[K]): Boolean =
+    ordering.lt(value1, value2)
 }
 
 final case class RangeKey[K](lower: K, upper: K)
