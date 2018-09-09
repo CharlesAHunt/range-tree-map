@@ -82,7 +82,7 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
     *   are connected to this range.
     */
   def putCoalescing(range: RangeKey[K], value: V): RangeTreeMap[K, V] = {
-    intersections(range).flatMap { intersection =>
+    intersections(range).map { intersection =>
       remove(intersection._2.range)
       //TODO: Minor: This can still produce multiple, new, overlapping ranges with the same value created if there are > 1 intersections with the same value
       if(intersection._2.value == value)
