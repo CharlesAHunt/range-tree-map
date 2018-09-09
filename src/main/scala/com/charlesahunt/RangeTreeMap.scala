@@ -35,7 +35,7 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
     * *   4 - Put the whole new range
     *
     */
-  def put(range: RangeKey[K], value: V): Option[RangeEntry[K, V]] = {
+  def put(range: RangeKey[K], value: V): RangeTreeMap[K, V] = {
     if (rangeTreeMap.nonEmpty) {
       intersections(range).foreach { intersecting =>
         rangeTreeMap.remove(intersecting._1)
@@ -46,6 +46,7 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
       }
     }
     rangeTreeMap.put(range.lower, RangeEntry(range, value))
+    this
   }
 
   /**
@@ -80,7 +81,7 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
     * Maps a range to a specified value, coalescing this range with any existing ranges with the same value that
     *   are connected to this range.
     */
-  def putCoalescing(range: RangeKey[K], value: V): mutable.TreeMap[K, RangeEntry[K, V]] = {
+  def putCoalescing(range: RangeKey[K], value: V): RangeTreeMap[K, V] = {
     intersections(range).flatMap { intersection =>
       remove(intersection._2.range)
       //TODO: Minor: This can still produce multiple, new, overlapping ranges with the same value created if there are > 1 intersections with the same value
@@ -94,7 +95,7 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
         put(range, value)
       }
     }
-    rangeTreeMap
+    this
   }
 
   /**
