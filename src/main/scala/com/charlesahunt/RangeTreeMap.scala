@@ -73,10 +73,9 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
     * Returns a view of the part of this range map that intersects/overlaps with range.
     */
   def subRangeMap(subRange: RangeKey[K]): RangeTreeMap[K, V] = {
-    RangeTreeMap.apply[K, V](
-      intersections(subRange)
-        .flatMap(intersect => intersection(intersect._2.range, subRange).map(_ -> intersect._2.value))
-        .toMap.map(kv => kv._1.lower -> RangeEntry(kv._1, kv._2))
+    apply[K, V](intersections(subRange)
+      .flatMap(intersect => intersection(intersect._2.range, subRange).map(_ -> intersect._2.value))
+      .toMap.map(kv => kv._1.lower -> RangeEntry(kv._1, kv._2))
     )
   }
 
@@ -114,8 +113,7 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
     } yield {
       (gteq(range.lower, headLowerBound) && lteq(range.lower, lastUpperBound)) &&
         (lteq(range.upper, lastUpperBound) && gteq(range.upper, headLowerBound))
-    })
-    .getOrElse(false)
+    }).getOrElse(false)
 
   /**
     * Finds all inclusively intersecting ranges with `subRange` in the map
@@ -156,10 +154,10 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
   def disjoint(rangeKey1: RangeKey[K], rangeKey2: RangeKey[K]): Set[RangeKey[K]] = {
     val sortedRangeKeys = List(rangeKey1.lower, rangeKey1.upper, rangeKey2.lower, rangeKey2.upper).sorted
     (for {
-      lowestDisjointLowerBound <- if (!equiv(rangeKey1.lower, rangeKey2.lower)) Some(sortedRangeKeys.head) else Option.empty[K]
+      lowestDisjointLowerBound <- if (!equiv(rangeKey1.lower, rangeKey2.lower)) sortedRangeKeys.headOption else Option.empty[K]
       lowestDisjointUpperBound <- sortedRangeKeys.tail.headOption
       highestDisjointLowerBound <- sortedRangeKeys.tail.tail.headOption
-      highestDisjointUpperBound <- if (!equiv(rangeKey1.upper, rangeKey2.upper)) Some(sortedRangeKeys.last) else Option.empty[K]
+      highestDisjointUpperBound <- if (!equiv(rangeKey1.upper, rangeKey2.upper)) sortedRangeKeys.lastOption else Option.empty[K]
     } yield {
       Set(
         RangeKey(lowestDisjointLowerBound, lowestDisjointUpperBound),
