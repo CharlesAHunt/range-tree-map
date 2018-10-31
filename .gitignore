@@ -11,4 +11,6 @@ pom.xml.asc
 .hg/
 /out
 /project/target
+project/project/
+/project/project/
 .idea
