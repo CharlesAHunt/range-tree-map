@@ -12,8 +12,11 @@ import scala.collection.mutable
   * @tparam V any value
   */
 class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None)(implicit ordering : scala.Ordering[K]) {
+
   import RangeTreeMap._
-  val rangeTreeMap: mutable.TreeMap[K, RangeEntry[K, V]] = new mutable.TreeMap[K, RangeEntry[K, V]].++(initialMap.getOrElse(Map.empty))
+
+  val rangeTreeMap: mutable.TreeMap[K, RangeEntry[K, V]] =
+    new mutable.TreeMap[K, RangeEntry[K, V]].++(initialMap.getOrElse(Map.empty))
 
   /**
     * Returns a view of this range map as an unmodifiable Map[Range[K], V].
@@ -152,14 +155,17 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
     */
   def disjoint(rangeKey1: RangeKey[K], rangeKey2: RangeKey[K]): Set[RangeKey[K]] = {
     val sortedRangeKeys = List(rangeKey1.lower, rangeKey1.upper, rangeKey2.lower, rangeKey2.upper).sorted
-    val lowestDisjointLowerBound = if(!equiv(rangeKey1.lower, rangeKey2.lower)) Some(sortedRangeKeys.head) else None
-    val lowestDisjointUpperBound = sortedRangeKeys.tail.head
-    val highestDisjointLowerBound = sortedRangeKeys.tail.tail.head
-    val highestDisjointUpperBound = if(!equiv(rangeKey1.upper, rangeKey2.upper)) Some(sortedRangeKeys.last) else None
-    Set(
-      lowestDisjointLowerBound.map(RangeKey(_, lowestDisjointUpperBound)),
-      highestDisjointUpperBound.map(RangeKey(highestDisjointLowerBound, _))
-    ).flatten[RangeKey[K]]
+    (for {
+      lowestDisjointLowerBound <- if (!equiv(rangeKey1.lower, rangeKey2.lower)) Some(sortedRangeKeys.head) else Option.empty[K]
+      lowestDisjointUpperBound <- sortedRangeKeys.tail.headOption
+      highestDisjointLowerBound <- sortedRangeKeys.tail.tail.headOption
+      highestDisjointUpperBound <- if (!equiv(rangeKey1.upper, rangeKey2.upper)) Some(sortedRangeKeys.last) else Option.empty[K]
+    } yield {
+      Set(
+        RangeKey(lowestDisjointLowerBound, lowestDisjointUpperBound),
+        RangeKey(highestDisjointLowerBound, highestDisjointUpperBound)
+      )
+    }).getOrElse(Set())
   }
 
 }
