@@ -149,7 +149,6 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
     *
     * There can exist 0, 1, or 2 possible disjoint Ranges from any two given rangeKeys
     *
-    * //TODO: Functional cleanup/refactor
     */
   def disjoint(rangeKey1: RangeKey[K], rangeKey2: RangeKey[K]): Set[RangeKey[K]] = {
     val sortedRangeKeys = List(rangeKey1.lower, rangeKey1.upper, rangeKey2.lower, rangeKey2.upper).sorted
@@ -193,10 +192,3 @@ object RangeTreeMap {
   def lt[K](value1: K, value2: K)(implicit ordering : scala.Ordering[K]): Boolean =
     ordering.lt(value1, value2)
 }
-
-final case class RangeKey[K](lower: K, upper: K)
-
-final case class RangeEntry[K, V](
-  range: RangeKey[K],
-  value: V
-)
