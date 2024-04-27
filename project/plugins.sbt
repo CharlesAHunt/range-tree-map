@@ -1,9 +1,9 @@
-addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.5.1")
+addSbtPlugin("org.scoverage" % "sbt-scoverage" % "2.0.10")
 
 addSbtPlugin("com.scalapenos" % "sbt-prompt" % "1.0.2")
 
-addSbtPlugin("org.wartremover" % "sbt-wartremover" % "2.2.1")
+addSbtPlugin("org.wartremover" % "sbt-wartremover" % "3.1.6")
 
-addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "2.3")
+addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.21")
 
-addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.1.0")
+addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.2.1")
