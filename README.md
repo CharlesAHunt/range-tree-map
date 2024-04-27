@@ -62,11 +62,3 @@ _For more examples and usage, please refer to the [Wiki](https://github.com/Char
 Charles Hunt – [Website](http://cornfluence.com) – charlesalberthunt@gmail.com
 
 Distributed under the MIT license. See ``LICENSE`` for more information.
-
-## Contributing
-
-1. Fork it (<https://github.com/charlesahunt/rangetreemap/fork>)
-2. Create your feature branch (`git checkout -b feature/fooBar`)
-3. Commit your changes (`git commit -am 'Add some fooBar'`)
-4. Push to the branch (`git push origin feature/fooBar`)
-5. Create a new Pull Request
