@@ -73,7 +73,7 @@ class RangeTreeMap[K, V](initialMap: Option[TreeMap[K, RangeEntry[K, V]]] = None
     * Returns a view of the part of this range map that intersects/overlaps with range.
     */
   def subRangeMap(subRange: RangeKey[K]): RangeTreeMap[K, V] = {
-    apply[K, V](intersections(subRange)
+    apply[K, V](intersections(subRange) //TODO This needs to be fixed
       .flatMap(intersect => intersection(intersect._2.range, subRange).map(_ -> intersect._2.value))
       .toMap.map(kv => kv._1.lower -> RangeEntry(kv._1, kv._2))
     )
